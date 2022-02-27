@@ -2,7 +2,7 @@ import {gql} from "apollo-server";
 
 export const typeDefs = gql`
     type Query {
-        posts: [Post!]!
+        posts: PostsPayload!
     }
     
     type Post {
@@ -33,20 +33,26 @@ export const typeDefs = gql`
         userErrors: [UserError!]!
         post: Post
     }
+
+    type PostsPayload {
+        userErrors: [UserError!]!
+        posts: [Post!]!
+    }
     
     type UserError {
         message: String!
     }
     
     type Mutation {
-        postCreate(title: String!, content: String!): PostPayload!
+        postCreate(post: PostInput!): PostPayload!
+        postUpdate(postId: ID!, post: PostInput!): PostPayload!
+        postDelete(postId: ID!): PostPayload!
     }
-		
-		type Story {
-				id: ID!
-				name: String!
-				content: String!
-		}
+    
+    input PostInput {
+        title: String
+        content: String
+    }
     
 `;
 

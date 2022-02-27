@@ -1,17 +1,17 @@
 import {Context} from "../index";
-import {Post} from "@prisma/client";
+import {Post, Prisma} from "@prisma/client";
 
 interface PostsPayloadType {
 	userErrors: {
 		message: string
 	}[],
-	posts: Post[] | null
+	posts: Post[] | Prisma.Prisma__PostClient<Post[]> | null
 }
 
 export const Query = {
 		posts: async (parent: any, args: any, {prisma}: Context): Promise<PostsPayloadType> => {
 
-			const posts = await prisma.post.findMany({
+			/*const posts = await prisma.post.findMany({
 				orderBy: [
 					{
 						createdAt: 'desc'
@@ -20,10 +20,20 @@ export const Query = {
 						title: 'asc'
 					}
 				]
-			});
+			})*/
+
 			return {
 				userErrors: [],
-				posts
+				posts: await prisma.post.findMany({
+					orderBy: [
+						{
+							createdAt: 'desc'
+						},
+						{
+							title: 'asc'
+						}
+					]
+				})
 			};
 		}
 	}
