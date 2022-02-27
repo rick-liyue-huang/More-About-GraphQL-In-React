@@ -14,7 +14,9 @@ interface PostPayloadType {
 }
 
 export const Mutation = {
-	postCreate: async (_: any, {title, content}: PostCreateArgs, {prisma}: Context): Promise<PostPayloadType> => {
+
+	// match with the mutation type in schema
+	postCreate: async (parent: any, {title, content}: PostCreateArgs, {prisma}: Context): Promise<PostPayloadType> => {
 
 		if (!title || !content) {
 			return {
@@ -38,5 +40,8 @@ export const Mutation = {
 			post: post
 		};
 
-	}
+	},
+
+
+
 }

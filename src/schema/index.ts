@@ -2,14 +2,14 @@ import {gql} from "apollo-server";
 
 export const typeDefs = gql`
     type Query {
-        hello: String!
+        posts: [Post!]!
     }
     
     type Post {
         id: ID!
         title: String!
         content: String!
-        createdAt: String!
+        createdAt : String!
         published: Boolean!
         user: User!
     }
@@ -18,6 +18,7 @@ export const typeDefs = gql`
         id: ID!
         name: String!
         email: String!
+#        password: String!  should not query password and return to exposed
         profile: Profile!
         posts: [Post!]!
     }
@@ -40,6 +41,12 @@ export const typeDefs = gql`
     type Mutation {
         postCreate(title: String!, content: String!): PostPayload!
     }
+		
+		type Story {
+				id: ID!
+				name: String!
+				content: String!
+		}
     
 `;
 
