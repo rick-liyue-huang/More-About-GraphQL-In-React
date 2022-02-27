@@ -1,8 +1,8 @@
 
 import { ApolloServer } from 'apollo-server';
 import {typeDefs} from "./schema";
-import {Mutation, Query} from "./resolvers";
 import {PrismaClient, Prisma} from '@prisma/client';
+import {Mutation, Query} from "./resolvers";
 
 // define the Context interface
 export interface Context {

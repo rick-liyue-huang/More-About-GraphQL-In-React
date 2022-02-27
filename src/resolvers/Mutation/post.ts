@@ -1,5 +1,5 @@
+import {Context} from "../../index";
 import {Post, Prisma} from "@prisma/client";
-import {Context} from "../index";
 
 interface PostArgs {
 	post: {
@@ -15,9 +15,9 @@ interface PostPayloadType {
 	post: Post | Prisma.Prisma__PostClient<Post> | null
 }
 
-export const Mutation = {
 
-	// match with the mutation type in schema
+export const postResolvers = {
+
 	postCreate: async (parent: any, {post}: PostArgs, {prisma}: Context): Promise<PostPayloadType> => {
 
 		const {title, content} = post;
@@ -117,6 +117,6 @@ export const Mutation = {
 			userErrors: [],
 			post: existingPost
 		}
-	}
+	},
 
 }
