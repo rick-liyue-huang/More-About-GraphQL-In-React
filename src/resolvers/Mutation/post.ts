@@ -1,5 +1,6 @@
 import {Context} from "../../index";
 import {Post, Prisma} from "@prisma/client";
+import {canUserMutatePost} from "../../utils/canUserMutatePost";
 
 interface PostArgs {
 	post: {
@@ -18,7 +19,16 @@ interface PostPayloadType {
 
 export const postResolvers = {
 
-	postCreate: async (parent: any, {post}: PostArgs, {prisma}: Context): Promise<PostPayloadType> => {
+	postCreate: async (parent: any, {post}: PostArgs, {prisma, userInfo}: Context): Promise<PostPayloadType> => {
+
+		// check the userinfo is null
+		if (!userInfo) {
+			return {
+				userErrors: [{message: 'forbidden access as unauthenticated'}],
+				post: null
+			}
+		}
+
 
 		const {title, content} = post;
 		if (!title || !content) {
@@ -36,15 +46,35 @@ export const postResolvers = {
 				data: {
 					title,
 					content,
-					authorId: 1
+					// authorId: 1
+					// add authorization
+					authorId: userInfo.userId
 				}
 			})
 		};
 
 	},
 
-	postUpdate: async (parent: any, {postId, post}: {postId: String, post: PostArgs['post']}, {prisma}: Context): Promise<PostPayloadType> => {
+	postUpdate: async (parent: any, {postId, post}: {postId: String, post: PostArgs['post']}, {prisma, userInfo}: Context): Promise<PostPayloadType> => {
+
+		// check the userinfo is null
+		if (!userInfo) {
+			return {
+				userErrors: [{message: 'forbidden access as unauthenticated'}],
+				post: null
+			}
+		}
+
+		const error = await canUserMutatePost({
+			userId: userInfo.userId,
+			postId: Number(postId),
+			prisma
+		});
+
+		if (error) return error;
+
 		const {title, content} = post;
+
 
 		if (!title && !content) {
 			return {
@@ -91,7 +121,24 @@ export const postResolvers = {
 		}
 	},
 
-	postDelete: async (parent: any, {postId}: {postId: string}, {prisma}: Context): Promise<PostPayloadType> => {
+	postDelete: async (parent: any, {postId}: {postId: string}, {prisma, userInfo}: Context): Promise<PostPayloadType> => {
+// check the userinfo is null
+		if (!userInfo) {
+			return {
+				userErrors: [{message: 'forbidden access as unauthenticated'}],
+				post: null
+			}
+		}
+
+		const error = await canUserMutatePost({
+			userId: userInfo.userId,
+			postId: Number(postId),
+			prisma
+		});
+
+		if (error) return error;
+
+
 		const existingPost = await prisma.post.findUnique({
 			where: {
 				id: Number(postId)
