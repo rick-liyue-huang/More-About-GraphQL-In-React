@@ -1,4 +1,4 @@
-node_modules
+server/node_modules
 # Keep environment variables out of version control
-.env
-.keys.ts
+server/.env
+
