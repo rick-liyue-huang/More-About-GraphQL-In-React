@@ -1,5 +1,6 @@
 import {Context} from "../index";
 import {Post, Prisma} from "@prisma/client";
+import {defineArguments} from "graphql/type/definition";
 
 interface PostsPayloadType {
 	userErrors: {
@@ -25,6 +26,9 @@ export const Query = {
 			return {
 				userErrors: [],
 				posts: await prisma.post.findMany({
+					where: {
+						published: true
+					},
 					orderBy: [
 						{
 							createdAt: 'desc'
@@ -35,6 +39,26 @@ export const Query = {
 					]
 				})
 			};
-		}
+		},
+
+		me: (parent: any, args: any, {userInfo, prisma}: Context) => {
+
+			if (!userInfo) return null;
+
+			return prisma.user.findUnique({
+				where: {
+					id: userInfo.userId
+				}
+			})
+		},
+
+	profile: (parent: any, {userId}: {userId: string}, {prisma}: Context) => {
+		//	here we donot need to add authorization, because profile is opened to others
+		return prisma.profile.findUnique({
+			where: {
+				userId: Number(userId)
+			}
+		})
+	}
 	}
 

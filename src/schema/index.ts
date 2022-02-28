@@ -58,6 +58,8 @@ export const typeDefs = gql`
 
     type Query {
         posts: PostsPayload!
+        me: User
+        profile(userId: ID!): Profile
     }
 
     type Mutation {

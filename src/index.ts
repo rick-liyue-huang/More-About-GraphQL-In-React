@@ -2,9 +2,9 @@
 import { ApolloServer } from 'apollo-server';
 import {typeDefs} from "./schema";
 import {PrismaClient, Prisma} from '@prisma/client';
-import {Mutation, Query} from "./resolvers";
+import {Mutation, Query, Profile, Post, User} from "./resolvers";
 import {getUserFromToken} from "./utils/getUserFromToken";
-import {assertWrappingType} from "graphql";
+
 
 // define the Context interface
 export interface Context {
@@ -26,7 +26,10 @@ const server = new ApolloServer({
 	typeDefs,
 	resolvers: {
 		Query,
-		Mutation
+		Mutation,
+		Profile,
+		Post,
+		User
 	},
 	context: async ({req}: any): Promise<Context> => {
 		console.log('---------------------', req.headers.authorization);
