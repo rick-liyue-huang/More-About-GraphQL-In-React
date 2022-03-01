@@ -52,13 +52,23 @@ export const Query = {
 			})
 		},
 
-	profile: (parent: any, {userId}: {userId: string}, {prisma}: Context) => {
+	profile: async (parent: any, {userId}: {userId: string}, {prisma, userInfo}: Context) => {
 		//	here we donot need to add authorization, because profile is opened to others
-		return prisma.profile.findUnique({
+
+		const isMyProfile = Number(userId) === userInfo?.userId
+
+		const profile = await prisma.profile.findUnique({
 			where: {
 				userId: Number(userId)
 			}
-		})
+		});
+
+		if(!profile) return null;
+
+		return {
+			...profile,
+			isMyProfile
+		}
 	}
-	}
+}
 
